@@ -1,0 +1,23 @@
+/**
+ * @author: Flavio Melo
+ * @email: flaviomelo17@gmail.com
+ * @date: 2024-06-24
+ */
+
+trigger AccountTrigger on Account (before insert, before update) {
+    // Obtem os IDs dos Record Types
+    Id pessoaFisicaRecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Pessoa Física').getRecordTypeId();
+    Id pessoaJuridicaRecordTypeId = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Pessoa Jurídica').getRecordTypeId();
+	
+    Switch on Trigger.operationType
+    {
+        When BEFORE_INSERT
+        {
+            DocumentValidator.validator(trigger.new, pessoaFisicaRecordTypeId, pessoaJuridicaRecordTypeId);
+        }
+        When BEFORE_UPDATE
+        {
+            DocumentValidator.validator(trigger.new, pessoaFisicaRecordTypeId, pessoaJuridicaRecordTypeId);
+        }
+    }
+}

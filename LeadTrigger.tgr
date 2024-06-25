@@ -1,0 +1,22 @@
+/**
+* @author: Flavio Melo
+* @email: flaviomelo17@gmail.com
+* @date: 2024-06-24
+*/
+
+trigger LeadTrigger on Lead (before insert, before update) {
+    Id pessoaFisicaRecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Pessoa Física').getRecordTypeId();
+    Id pessoaJuridicaRecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Pessoa Jurídica').getRecordTypeId();
+    
+    Switch on Trigger.operationType
+    {
+        When BEFORE_INSERT
+        {
+            DocumentValidator.validator(trigger.new, pessoaFisicaRecordTypeId, pessoaJuridicaRecordTypeId);
+        }
+        When BEFORE_UPDATE
+        {
+            DocumentValidator.validator(trigger.new, pessoaFisicaRecordTypeId, pessoaJuridicaRecordTypeId);
+        }
+    }
+}
